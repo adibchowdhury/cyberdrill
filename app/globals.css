@@ -1,26 +1,63 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* CyberDrill light theme. Terminal colors stay on the terminal tokens below. */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-muted: #475569;
+  --color-surface: #ffffff;
+  --color-raised: #f1f5f9;
+  --color-sidebar: #ffffff;
+  --color-line: #e2e8f0;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-on-accent: #ffffff;
+  --color-cyan: #0891b2;
+  --color-cyan-text: #0e7490;
+  --color-success: #059669;
+  --color-success-text: #047857;
+  --color-warning: #d97706;
+  --color-warning-text: #b45309;
+  --color-expert: #9333ea;
+  --color-expert-text: #9333ea;
+  --color-terminal: #0b1120;
+  --color-terminal-foreground: #e8eef6;
+  --color-terminal-muted: #93a4bd;
+  --color-terminal-prompt: #00e5a0;
+  --color-terminal-notice: #fbbf24;
+  --color-terminal-response: #67e8f9;
+  --color-terminal-border: #1e3a5f;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-foreground);
+}
+
+.meter-fill {
+  background-image: linear-gradient(90deg, var(--color-accent), var(--color-cyan));
+}
+
+@keyframes terminal-caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.terminal-caret {
+  animation: terminal-caret 1.05s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-caret {
+    animation: none;
+  }
 }
