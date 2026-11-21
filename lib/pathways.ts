@@ -2385,7 +2385,704 @@ const understandLinuxNetworkingCommands: Skill = {
     }
   ],
 };
+const whatIsLinuxAndTheShell: Skill = {
+  id: `${LINUX}/beginner/what-is-linux-and-the-shell`,
+  slug: "what-is-linux-and-the-shell",
+  pathway: LINUX,
+  level: "beginner",
+  domain: "fundamentals",
+  title: "What Linux and the Shell Are",
+  description: "Tell the kernel, the shell, and the prompt apart.",
+  minutes: 5,
+  placeholder: false,
+  teaching: [
+    {
+      type: "paragraph",
+      text: "Linux is the kernel: the program that manages the CPU, memory, disks, and processes. Ubuntu is a distribution. It packages that kernel with a shell, tools, and an installer. Debian, Fedora, and RHEL are other distributions. They share the kernel and differ in packages and defaults.",
+    },
+    {
+      type: "list",
+      items: [
+        "The terminal is the window that shows text. The shell is the program behind it that reads each line and runs it. On Ubuntu the default shell is bash",
+        "A prompt looks like user@host:path$ . alex@web-1:~$ means user alex, host web-1, and ~ for alex's home. The $ means a normal user",
+        "A prompt that ends in # is a root shell. The # is not a comment and it does not mean the current directory is /root",
+        "A command line is a command, then options, then arguments. In ls -l /etc, ls is the command, -l is an option, and /etc is the argument",
+        "man ls opens the manual page. Press q to leave it. ls --help prints a short usage summary and returns you to the prompt",
+      ],
+    },
+    {
+      type: "heading",
+      text: "Commands you will use",
+    },
+    {
+      type: "code",
+      label: "Read the manual, then a short summary",
+      code: "man ls\nls --help",
+    },
+    {
+      type: "code",
+      label: "Example",
+      code: "alex@web-1:~$ man ls\nalex@web-1:~$ ls --help\nUsage: ls [OPTION]... [FILE]...",
+    },
+    {
+      type: "heading",
+      text: "Common mistake",
+    },
+    {
+      type: "paragraph",
+      text: "Typing ls with no path is not an error, and it is not a search of the whole disk. The shell runs ls, and ls uses the current directory when you give it no argument. man ls explains that. The prompt's path, not the command name, tells you where you are.",
+    },
+  ],
+  questions: [
+    {
+      id: "kernel-or-distro",
+      type: "multiple-choice",
+      prompt: "Which statement matches Ubuntu and Linux?",
+      choices: [
+        { id: "distro", label: "Linux is the kernel. Ubuntu is a distribution that includes it" },
+        { id: "kernel", label: "Ubuntu is the kernel. Linux is a distribution" },
+        { id: "same", label: "Ubuntu and Linux are two names for the same program" },
+        { id: "shell", label: "Linux is the shell. Ubuntu is the terminal window" },
+      ],
+      correctId: "distro",
+      explanation:
+        "Linux names the kernel. Ubuntu is a distribution: that kernel plus the userspace and the package set. Calling Ubuntu the kernel swaps the two.",
+    },
+    {
+      id: "shell-reads",
+      type: "multiple-choice",
+      prompt: "You type a line and press Enter. Which program reads that line and runs the command?",
+      choices: [
+        { id: "shell", label: "The shell" },
+        { id: "terminal", label: "The terminal window" },
+        { id: "kernel", label: "The kernel, with no shell involved" },
+        { id: "man", label: "man" },
+      ],
+      correctId: "shell",
+      explanation:
+        "The shell, bash on Ubuntu, reads the line, finds the program, and starts it. The terminal only displays text and sends keystrokes to the shell. man is a manual reader, not the program that runs every command.",
+    },
+    {
+      id: "argument",
+      type: "multiple-choice",
+      prompt: "In the command ls -l /etc, which word is the argument?",
+      choices: [
+        { id: "path", label: "/etc" },
+        { id: "option", label: "-l" },
+        { id: "command", label: "ls" },
+        { id: "prompt", label: "The $ at the end of the prompt" },
+      ],
+      correctId: "path",
+      explanation:
+        "/etc is the argument: the file or directory the command acts on. -l is an option that changes how ls prints. ls is the command. The $ is part of the prompt, not part of the command.",
+    },
+    {
+      id: "root-prompt",
+      type: "visual",
+      prompt: "Which statement matches this prompt?",
+      output: {
+        caption: "The prompt on web-1",
+        lines: ["root@web-1:/var/log#"],
+      },
+      choices: [
+        { id: "root-var", label: "User root, current directory /var/log, root shell" },
+        { id: "root-home", label: "User root, current directory /root" },
+        { id: "alex", label: "User alex, current directory /var/log" },
+        { id: "failed", label: "The # means the previous command failed" },
+      ],
+      correctId: "root-var",
+      explanation:
+        "The prompt is user@host:path, then #. The user is root, the path is /var/log, and # marks a root shell. # does not mean the directory is /root, and it is not an exit status.",
+    },
+    {
+      id: "open-man",
+      type: "terminal",
+      prompt:
+        "Open the manual page for ls. Use man. man ls, man with section 1, and man ls.1 are fine. -- before the page name is fine. Do not add other options and do not quote ls.",
+      scenario: "alex@web-1:~",
+      accepted: ["man ls", "man 1 ls", "man ls.1", "man -- ls", "man 1 -- ls"],
+      explanation:
+        "man ls opens the ls manual. man 1 ls and man ls.1 ask for section 1, which is the user command. ls --help only prints a short summary, and it is a different command.",
+    },
+  ],
+};
+
+const redirectOutputAndErrors: Skill = {
+  id: `${LINUX}/intermediate/redirect-output-and-errors`,
+  slug: "redirect-output-and-errors",
+  pathway: LINUX,
+  level: "beginner",
+  domain: "fundamentals",
+  title: "Redirect Output and Errors",
+  description: "Send command output and errors to a file or another command.",
+  minutes: 8,
+  placeholder: false,
+  teaching: [
+    {
+      type: "paragraph",
+      text: "A command has two output streams. Standard output is the normal result. Standard error is the failure text. A pipe or a redirection decides where each stream goes. The shell sets that up before the command runs.",
+    },
+    {
+      type: "list",
+      items: [
+        "| sends standard output of the left command into the standard input of the right command. sort names.txt | uniq is one pipeline",
+        "> file replaces the file with standard output. >> file adds to the end. Both leave standard error on the terminal",
+        "2> file sends standard error to that file and leaves standard output alone. > file 2>&1 sends both to the file. The 2>&1 has to come after > file",
+        "&> file is bash for both streams. Ubuntu's interactive shell is bash. A script that starts with #!/bin/sh is dash, which does not accept &>",
+        "> /dev/null discards standard output. > /dev/null 2>&1 discards both. 2> /dev/null discards only the error",
+        "wc -l counts lines. sort orders lines. uniq removes adjacent duplicates, so sort has to come before uniq",
+      ],
+    },
+    {
+      type: "heading",
+      text: "Commands you will use",
+    },
+    {
+      type: "code",
+      label: "Pipe, then redirect one stream",
+      code: "sort /home/alex/names.txt | uniq\nsort /home/alex/names.txt | uniq | wc -l\nls /home/alex > /home/alex/list.txt\nls /no/such 2> /home/alex/err.txt",
+    },
+    {
+      type: "code",
+      label: "Example",
+      code: "alex@web-1:~$ sort names.txt | uniq\napp-01\nweb-1\nalex@web-1:~$ sort names.txt | uniq | wc -l\n2",
+    },
+    {
+      type: "heading",
+      text: "Common mistake",
+    },
+    {
+      type: "paragraph",
+      text: "sort names.txt > names.txt empties the file. The shell truncates the destination before sort reads it, so sort reads an empty file and writes that back. Write to a new file, then replace the original with mv if you meant to rewrite it.",
+    },
+  ],
+  questions: [
+    {
+      id: "append-or-replace",
+      type: "multiple-choice",
+      prompt: "counts.txt already has lines in it. Which operator adds new standard output at the end and keeps those lines?",
+      choices: [
+        { id: "append", label: ">>" },
+        { id: "replace", label: ">" },
+        { id: "stderr", label: "2>" },
+        { id: "pipe", label: "|" },
+      ],
+      correctId: "append",
+      explanation:
+        ">> appends standard output. > replaces the whole file, which deletes the lines already there. 2> redirects errors, and | connects two commands instead of writing a file.",
+    },
+    {
+      id: "truncate-first",
+      type: "multiple-choice",
+      prompt: "You run sort /home/alex/names.txt > /home/alex/names.txt. What is in names.txt when the command finishes?",
+      choices: [
+        { id: "empty", label: "Nothing. The file was emptied before sort read it" },
+        { id: "sorted", label: "The same names, sorted" },
+        { id: "original", label: "The original unsorted names" },
+        { id: "errors", label: "The error message from sort" },
+      ],
+      correctId: "empty",
+      explanation:
+        "The shell opens the destination and truncates it before sort starts, so sort reads an empty file and writes nothing back. It does not read the original lines and then sort them into the same file.",
+    },
+    {
+      id: "stderr-only",
+      type: "multiple-choice",
+      prompt: "What does ls /no/such 2> /home/alex/err.txt send to err.txt?",
+      choices: [
+        { id: "errors", label: "Standard error only" },
+        { id: "both", label: "Standard output and standard error" },
+        { id: "output", label: "Standard output only" },
+        { id: "nothing", label: "Nothing. 2> discards the stream" },
+      ],
+      correctId: "errors",
+      explanation:
+        "2> redirects file descriptor 2, which is standard error. Standard output is unchanged. Sending both streams to the file takes > /home/alex/err.txt 2>&1 or, in bash, &> /home/alex/err.txt.",
+    },
+    {
+      id: "split-streams",
+      type: "visual",
+      prompt: "Where did the error message go?",
+      output: {
+        caption: "A listing of a missing path and a real directory",
+        lines: [
+          "alex@web-1:~$ ls /no/such /home/alex > /home/alex/list.txt",
+          "ls: cannot access '/no/such': No such file or directory",
+          "alex@web-1:~$ cat /home/alex/list.txt",
+          "backup.sh",
+          "projects",
+        ],
+      },
+      choices: [
+        { id: "terminal", label: "It stayed on the terminal. The file received the names" },
+        { id: "file", label: "It was written into list.txt with the names" },
+        { id: "discarded", label: "It was discarded, and list.txt has only the names" },
+        { id: "appended", label: "It was appended after projects in list.txt" },
+      ],
+      correctId: "terminal",
+      explanation:
+        "> redirects standard output, so the names are in list.txt. The missing-path message is standard error, and this command did not redirect it, so it stayed on the terminal. It is not a line in the file.",
+    },
+    {
+      id: "unique-names",
+      type: "terminal",
+      prompt:
+        "You are in /home/alex. names.txt has one hostname per line, with duplicates. Replace /home/alex/unique.txt with those names sorted and with duplicates removed. Use the absolute paths /home/alex/names.txt and /home/alex/unique.txt only. Do not quote them. Pipe sort to uniq with no options, or use sort -u or sort --unique. Redirect standard output with >. Do not append, do not redirect standard error, and do not add other options.",
+      scenario: "alex@web-1:~",
+      accepted: [
+        "sort /home/alex/names.txt | uniq > /home/alex/unique.txt",
+        "sort /home/alex/names.txt | uniq> /home/alex/unique.txt",
+        "sort /home/alex/names.txt | uniq >/home/alex/unique.txt",
+        "sort /home/alex/names.txt | uniq>/home/alex/unique.txt",
+        "sort /home/alex/names.txt|uniq > /home/alex/unique.txt",
+        "sort /home/alex/names.txt|uniq> /home/alex/unique.txt",
+        "sort /home/alex/names.txt|uniq >/home/alex/unique.txt",
+        "sort /home/alex/names.txt|uniq>/home/alex/unique.txt",
+        "sort /home/alex/names.txt |uniq > /home/alex/unique.txt",
+        "sort /home/alex/names.txt |uniq> /home/alex/unique.txt",
+        "sort /home/alex/names.txt |uniq >/home/alex/unique.txt",
+        "sort /home/alex/names.txt |uniq>/home/alex/unique.txt",
+        "sort /home/alex/names.txt| uniq > /home/alex/unique.txt",
+        "sort /home/alex/names.txt| uniq> /home/alex/unique.txt",
+        "sort /home/alex/names.txt| uniq >/home/alex/unique.txt",
+        "sort /home/alex/names.txt| uniq>/home/alex/unique.txt",
+        "sort -u /home/alex/names.txt > /home/alex/unique.txt",
+        "sort -u /home/alex/names.txt> /home/alex/unique.txt",
+        "sort -u /home/alex/names.txt >/home/alex/unique.txt",
+        "sort -u /home/alex/names.txt>/home/alex/unique.txt",
+        "sort /home/alex/names.txt -u > /home/alex/unique.txt",
+        "sort /home/alex/names.txt -u> /home/alex/unique.txt",
+        "sort /home/alex/names.txt -u >/home/alex/unique.txt",
+        "sort /home/alex/names.txt -u>/home/alex/unique.txt",
+        "sort --unique /home/alex/names.txt > /home/alex/unique.txt",
+        "sort --unique /home/alex/names.txt> /home/alex/unique.txt",
+        "sort --unique /home/alex/names.txt >/home/alex/unique.txt",
+        "sort --unique /home/alex/names.txt>/home/alex/unique.txt",
+        "sort /home/alex/names.txt --unique > /home/alex/unique.txt",
+        "sort /home/alex/names.txt --unique> /home/alex/unique.txt",
+        "sort /home/alex/names.txt --unique >/home/alex/unique.txt",
+        "sort /home/alex/names.txt --unique>/home/alex/unique.txt",
+      ],
+      explanation:
+        "sort | uniq and sort -u both write the sorted unique lines. uniq only removes duplicates that are already next to each other, so sorting has to happen first. > replaces unique.txt. >> would keep the old lines, and writing back into names.txt would empty it.",
+    },
+  ],
+};
+
+const editAFileInTheShell: Skill = {
+  id: `${LINUX}/intermediate/edit-a-file-in-the-shell`,
+  slug: "edit-a-file-in-the-shell",
+  pathway: LINUX,
+  level: "beginner",
+  domain: "fundamentals",
+  title: "Edit a File in the Shell",
+  description: "Open a file, change one line, and save it.",
+  minutes: 8,
+  placeholder: false,
+  teaching: [
+    {
+      type: "paragraph",
+      text: "nano and vim edit a file in the terminal. Copy the file first. If the edit goes wrong, the copy is the previous contents. cat prints a short file so you can check the line. less is the better reader when the file is longer than the screen. Press q to leave less.",
+    },
+    {
+      type: "list",
+      items: [
+        "cp /home/alex/hosts.txt /home/alex/hosts.txt.bak copies the file. The original stays in place",
+        "nano /home/alex/hosts.txt opens it. Type the change. Ctrl+O writes it. Confirm the name, then Ctrl+X leaves",
+        "Ctrl+X in nano exits. If the buffer changed and you have not written it, nano asks whether to save. Ctrl+X is not itself the save key",
+        "In vim, Esc returns to normal mode. :w writes. :q leaves when nothing unsaved remains. :wq writes and leaves. :q! leaves and discards unsaved changes",
+        "cat /home/alex/hosts.txt prints the saved file. What you saw in the editor is not on disk until you write it",
+      ],
+    },
+    {
+      type: "heading",
+      text: "Commands you will use",
+    },
+    {
+      type: "code",
+      label: "Copy, edit, then read it back",
+      code: "cp /home/alex/hosts.txt /home/alex/hosts.txt.bak\nnano /home/alex/hosts.txt\ncat /home/alex/hosts.txt",
+    },
+    {
+      type: "code",
+      label: "Example",
+      code: "alex@web-1:~$ cp hosts.txt hosts.txt.bak\nalex@web-1:~$ cat hosts.txt\nweb-1\napp-01",
+    },
+    {
+      type: "heading",
+      text: "Common mistake",
+    },
+    {
+      type: "paragraph",
+      text: "mv hosts.txt hosts.txt.bak is not a backup you can edit from. mv renames the file, so hosts.txt is gone and nano hosts.txt starts an empty file. cp leaves both names.",
+    },
+  ],
+  questions: [
+    {
+      id: "nano-save",
+      type: "multiple-choice",
+      prompt: "hosts.txt is open in nano and you have typed a new line. Which key writes that buffer to disk?",
+      choices: [
+        { id: "write", label: "Ctrl+O" },
+        { id: "exit", label: "Ctrl+X" },
+        { id: "cut", label: "Ctrl+K" },
+        { id: "cancel", label: "Ctrl+C" },
+      ],
+      correctId: "write",
+      explanation:
+        "Ctrl+O is Write Out. That stores the buffer. Ctrl+X exits, and nano only asks about saving if the buffer still has unsaved changes. Ctrl+K cuts a line. Ctrl+C cancels the current prompt.",
+    },
+    {
+      id: "vim-discard",
+      type: "multiple-choice",
+      prompt: "A file is open in vim and the buffer has changes you do not want to keep. How do you leave?",
+      choices: [
+        { id: "discard", label: "Esc, then :q!" },
+        { id: "save", label: "Esc, then :wq" },
+        { id: "nano", label: "Ctrl+O" },
+        { id: "plain-quit", label: "Esc, then :q" },
+      ],
+      correctId: "discard",
+      explanation:
+        ":q! quits and discards the unsaved buffer. :wq writes those changes and then quits, which keeps the edit you wanted to drop. :q refuses to quit while the buffer is changed. Ctrl+O is a nano key.",
+    },
+    {
+      id: "backup-copy",
+      type: "multiple-choice",
+      prompt: "You want hosts.txt to stay in place and hosts.txt.bak to hold the same bytes before you edit. Which command does that?",
+      choices: [
+        { id: "copy", label: "cp hosts.txt hosts.txt.bak" },
+        { id: "move", label: "mv hosts.txt hosts.txt.bak" },
+        { id: "empty", label: "touch hosts.txt.bak" },
+        { id: "remove", label: "rm hosts.txt.bak" },
+      ],
+      correctId: "copy",
+      explanation:
+        "cp copies the bytes and leaves hosts.txt where it is. mv renames it, so the original name is gone. touch creates an empty hosts.txt.bak and does not copy the contents. rm deletes a file.",
+    },
+    {
+      id: "read-env",
+      type: "visual",
+      prompt: "What value is saved for NODE_ENV?",
+      output: {
+        caption: "cat /home/alex/app.env",
+        lines: ["PORT=8080", "NODE_ENV=production"],
+      },
+      choices: [
+        { id: "production", label: "production" },
+        { id: "port", label: "8080" },
+        { id: "development", label: "development" },
+        { id: "empty", label: "The file has no NODE_ENV line" },
+      ],
+      correctId: "production",
+      explanation:
+        "The saved line is NODE_ENV=production. 8080 belongs to PORT. cat shows the file on disk, not an unsaved editor buffer.",
+    },
+    {
+      id: "make-backup",
+      type: "terminal",
+      prompt:
+        "You are in /home/alex. Copy hosts.txt to hosts.txt.bak in the same directory. Use cp with no options. hosts.txt, ./hosts.txt, or /home/alex/hosts.txt is fine, and the same three forms are fine for hosts.txt.bak. Do not quote the paths.",
+      scenario: "alex@web-1:~",
+      accepted: [
+        "cp hosts.txt hosts.txt.bak",
+        "cp hosts.txt ./hosts.txt.bak",
+        "cp hosts.txt /home/alex/hosts.txt.bak",
+        "cp ./hosts.txt hosts.txt.bak",
+        "cp ./hosts.txt ./hosts.txt.bak",
+        "cp ./hosts.txt /home/alex/hosts.txt.bak",
+        "cp /home/alex/hosts.txt hosts.txt.bak",
+        "cp /home/alex/hosts.txt ./hosts.txt.bak",
+        "cp /home/alex/hosts.txt /home/alex/hosts.txt.bak",
+      ],
+      explanation:
+        "cp copies hosts.txt to hosts.txt.bak and leaves the original name in place. mv hosts.txt hosts.txt.bak would remove the name you still need to edit.",
+    },
+  ],
+};
+
+const writeASimpleShellScript: Skill = {
+  id: `${LINUX}/advanced/write-a-simple-shell-script`,
+  slug: "write-a-simple-shell-script",
+  pathway: LINUX,
+  level: "beginner",
+  domain: "scripting",
+  title: "Write a Simple Shell Script",
+  description: "Put a few commands in a file and run that file.",
+  minutes: 10,
+  placeholder: false,
+  teaching: [
+    {
+      type: "paragraph",
+      text: "A shell script is a text file of commands. The first line is the shebang. It tells the kernel which program should read the file. #!/bin/bash selects bash. #!/usr/bin/env bash asks env to find bash, which is useful when bash is not in /bin. The shebang has to be line 1.",
+    },
+    {
+      type: "list",
+      items: [
+        "chmod u+x /home/alex/bin/check.sh adds execute for the owner and does not change read or write",
+        "./check.sh runs the file in this directory. check.sh with no slash searches PATH and does not look in the current directory",
+        "name=web-1 sets a variable. echo \"$name\" prints the value. The quotes keep an empty or spaced value as one word",
+        "host=$(hostname) stores the command's standard output in host. Backticks, host=`hostname`, are the older form of the same substitution",
+        "if [ \"$host\" = web-1 ]; then echo on web-1; fi runs the echo only when the test is true. [ is a command, so the spaces around [ and before ] are required",
+        "$? is the exit status of the previous command. 0 means success. Any other number means failure. 127 means the command was not found",
+      ],
+    },
+    {
+      type: "heading",
+      text: "Commands you will use",
+    },
+    {
+      type: "code",
+      label: "check.sh",
+      code: "#!/bin/bash\nhost=$(hostname)\nif [ \"$host\" = web-1 ]; then\n  echo \"on web-1\"\nfi",
+    },
+    {
+      type: "code",
+      label: "Make it executable, run it, then read the status",
+      code: "chmod u+x /home/alex/bin/check.sh\n./check.sh\necho $?",
+    },
+    {
+      type: "code",
+      label: "Example",
+      code: "alex@web-1:~/bin$ ./check.sh\non web-1\nalex@web-1:~/bin$ echo $?\n0",
+    },
+    {
+      type: "heading",
+      text: "Common mistake",
+    },
+    {
+      type: "paragraph",
+      text: "[ \"$host\"=web-1 ] fails because the shell passes [ one argument, the glued string, and [ expects = as its own argument. Put spaces around [ and around =. The other frequent miss is running check.sh without ./ and then reading $? as 127.",
+    },
+  ],
+  questions: [
+    {
+      id: "shebang-line",
+      type: "multiple-choice",
+      prompt: "Which line has to be the first line of a script that should run under bash?",
+      choices: [
+        { id: "first", label: "#!/bin/bash" },
+        { id: "second", label: "A blank line, then #!/bin/bash" },
+        { id: "echo", label: "echo hello" },
+        { id: "chmod", label: "chmod u+x check.sh" },
+      ],
+      correctId: "first",
+      explanation:
+        "The kernel reads the shebang only when #! is the first two bytes of the file. A blank line or an echo before it means those bytes are not a shebang, so the kernel does not use that line to pick bash. chmod is a command you run on the file, not a line inside it.",
+    },
+    {
+      id: "run-here",
+      type: "multiple-choice",
+      prompt: "check.sh is in the current directory and is executable. Which command runs that file without searching PATH?",
+      choices: [
+        { id: "dot-slash", label: "./check.sh" },
+        { id: "bare", label: "check.sh" },
+        { id: "echo", label: "echo check.sh" },
+        { id: "man", label: "man check.sh" },
+      ],
+      correctId: "dot-slash",
+      explanation:
+        "./check.sh tells the shell to run the file in this directory. check.sh has no slash, so the shell searches PATH and does not look in the current directory. echo prints the name. man looks for a manual page.",
+    },
+    {
+      id: "status-zero",
+      type: "multiple-choice",
+      prompt: "A command finishes, and echo $? prints 0. What does that 0 mean?",
+      choices: [
+        { id: "ok", label: "The command succeeded" },
+        { id: "fail", label: "The command failed" },
+        { id: "lines", label: "The command printed zero lines" },
+        { id: "missing", label: "The command was not found" },
+      ],
+      correctId: "ok",
+      explanation:
+        "0 is the success status. A failure is a non-zero status. A missing command is 127, not 0. $? is not a count of output lines.",
+    },
+    {
+      id: "status-two",
+      type: "visual",
+      prompt: "Did ls succeed?",
+      output: {
+        caption: "ls /no/such; echo $?",
+        lines: ["ls: cannot access '/no/such': No such file or directory", "2"],
+      },
+      choices: [
+        { id: "no", label: "No. The status is 2" },
+        { id: "printed", label: "Yes. It printed a message" },
+        { id: "two-ok", label: "Yes. 2 means success" },
+        { id: "zero", label: "Yes. A blank status means success" },
+      ],
+      correctId: "no",
+      explanation:
+        "The 2 is $?, and only 0 means success. The message is standard error from the failed ls, not proof that it succeeded. A blank line is not the status.",
+    },
+    {
+      id: "owner-execute",
+      type: "terminal",
+      prompt:
+        "You are in /home/alex/bin. Add execute permission for the owner of backup.sh and do not change any other permission. Use chmod u+x. backup.sh, ./backup.sh, or /home/alex/bin/backup.sh is fine. -- before the path is fine. Do not use a numeric mode, +x, or a+x, and do not add other options.",
+      scenario: "alex@web-1:~/bin",
+      accepted: [
+        "chmod u+x backup.sh",
+        "chmod u+x ./backup.sh",
+        "chmod u+x /home/alex/bin/backup.sh",
+        "chmod u+x -- backup.sh",
+        "chmod u+x -- ./backup.sh",
+        "chmod u+x -- /home/alex/bin/backup.sh",
+      ],
+      explanation:
+        "u+x adds execute for the owner only. chmod +x and chmod a+x also add execute for the group and for everyone else. A numeric mode such as 755 would rewrite the other bits instead of adding one.",
+    },
+  ],
+};
+
+const installAndRemovePackages: Skill = {
+  id: `${LINUX}/beginner/install-and-remove-packages`,
+  slug: "install-and-remove-packages",
+  pathway: LINUX,
+  level: "beginner",
+  domain: "packages",
+  title: "Install and Remove Packages",
+  description: "Install a package and remove one on Ubuntu.",
+  minutes: 6,
+  placeholder: false,
+  teaching: [
+    {
+      type: "paragraph",
+      text: "Ubuntu and Debian install software with apt. The package index on disk is a list of what the repositories currently offer. Installing or removing a package writes into root-owned directories such as /var/lib/dpkg and /usr, so a normal user runs apt through sudo. On RHEL and Fedora the matching tool is dnf. There, dnf update is an alias of dnf upgrade. apt update and apt upgrade are not aliases.",
+    },
+    {
+      type: "list",
+      items: [
+        "sudo apt update downloads the package index. It does not install or upgrade packages. The RHEL counterpart is sudo dnf makecache",
+        "sudo apt upgrade installs newer versions of packages that are already installed. It does not remove packages to do that. On RHEL, sudo dnf upgrade does this job",
+        "sudo apt install nginx installs nginx and the packages it depends on. sudo dnf install nginx is the RHEL command",
+        "sudo apt remove nginx removes the package and leaves its configuration files. sudo apt purge nginx removes the package and those configuration files. sudo dnf remove nginx is the RHEL removal",
+        "apt search nginx searches names and descriptions. apt show nginx prints the record for one package. On RHEL those are dnf search nginx and dnf info nginx",
+        "dpkg -l lists packages known to dpkg. ii means installed. rc means removed, with configuration files still present. RHEL lists installed packages with rpm -qa",
+        "sudo apt autoremove removes packages that were installed automatically as dependencies and are no longer needed. sudo dnf autoremove is the RHEL command",
+      ],
+    },
+    {
+      type: "heading",
+      text: "Commands you will use",
+    },
+    {
+      type: "code",
+      label: "Refresh the index, install, then check",
+      code: "sudo apt update\nsudo apt install nginx\ndpkg -l nginx\nsudo apt purge nginx",
+    },
+    {
+      type: "code",
+      label: "Example",
+      code: "alex@web-1:~$ dpkg -l nginx apache2\nii  nginx    1.24.0-2ubuntu7.5 amd64 small, powerful, scalable web/proxy server\nrc  apache2  2.4.58-1ubuntu8.8 amd64 Apache HTTP Server",
+    },
+    {
+      type: "heading",
+      text: "Common mistake",
+    },
+    {
+      type: "paragraph",
+      text: "apt update feels like it should upgrade the system, because the word says update. It only refreshes the index. The installed packages stay on the old versions until apt upgrade. Running apt install without sudo fails when the user cannot open the dpkg lock.",
+    },
+  ],
+  questions: [
+    {
+      id: "update-index",
+      type: "multiple-choice",
+      prompt: "What does sudo apt update change?",
+      choices: [
+        { id: "index", label: "The local package index" },
+        { id: "upgrade", label: "Every installed package, to the newest version" },
+        { id: "one", label: "One package named on the command line" },
+        { id: "unused", label: "Packages that are no longer needed" },
+      ],
+      correctId: "index",
+      explanation:
+        "apt update downloads the repository indexes so later commands see current versions. It does not upgrade installed packages. That is apt upgrade. Removing unused dependencies is apt autoremove.",
+    },
+    {
+      id: "purge-config",
+      type: "multiple-choice",
+      prompt: "You want nginx removed, including the configuration files it left under /etc. Which command does that?",
+      choices: [
+        { id: "purge", label: "sudo apt purge nginx" },
+        { id: "remove", label: "sudo apt remove nginx" },
+        { id: "auto", label: "sudo apt autoremove nginx" },
+        { id: "update", label: "sudo apt update nginx" },
+      ],
+      correctId: "purge",
+      explanation:
+        "apt purge removes the package and its configuration files. apt remove removes the package and leaves those configuration files, which is why dpkg -l can still show rc afterward. apt update does not take a package to remove.",
+    },
+    {
+      id: "why-sudo",
+      type: "multiple-choice",
+      prompt: "apt install nginx fails for user alex with a permission error on the dpkg lock. Why?",
+      choices: [
+        { id: "root-dirs", label: "Installing writes to directories owned by root" },
+        { id: "no-sudo", label: "apt install is documented to work for any user, with no extra privileges" },
+        { id: "missing", label: "nginx is not a package name apt accepts" },
+        { id: "spelling", label: "The command had to be apt upgrade nginx" },
+      ],
+      correctId: "root-dirs",
+      explanation:
+        "The package database and the installed files are owned by root, so alex cannot open the lock or write those paths. sudo runs apt as root. The failure is not a misspelled package name, and apt upgrade would upgrade installed packages rather than fix the permission.",
+    },
+    {
+      id: "which-installed",
+      type: "visual",
+      prompt: "Which package is installed?",
+      output: {
+        caption: "dpkg -l nginx apache2",
+        lines: [
+          "ii  nginx    1.24.0-2ubuntu7.5 amd64 small, powerful, scalable web/proxy server",
+          "rc  apache2  2.4.58-1ubuntu8.8 amd64 Apache HTTP Server",
+        ],
+      },
+      choices: [
+        { id: "nginx", label: "nginx" },
+        { id: "apache", label: "apache2" },
+        { id: "both", label: "Both nginx and apache2" },
+        { id: "neither", label: "Neither. Both rows are only available in the repository" },
+      ],
+      correctId: "nginx",
+      explanation:
+        "ii means the package is installed. rc means it was removed and its configuration files are still on disk, so apache2 is not installed. A row in this listing is not the same thing as a package that is currently installed.",
+    },
+    {
+      id: "install-nginx",
+      type: "terminal",
+      prompt:
+        "Install the package named nginx and no other package. Use apt install. -y, --yes, and --assume-yes are fine, before or after install, or after the package name. -- before nginx is fine when it does not turn a later -y into a package name. Do not use apt-get or dnf. Do not run update or upgrade. Do not name another package. sudo is optional.",
+      scenario: "alex@web-1:~",
+      accepted: [
+        "apt install nginx",
+        "apt install -- nginx",
+        "apt -y install nginx",
+        "apt --yes install nginx",
+        "apt --assume-yes install nginx",
+        "apt -y install -- nginx",
+        "apt --yes install -- nginx",
+        "apt --assume-yes install -- nginx",
+        "apt install -y nginx",
+        "apt install --yes nginx",
+        "apt install --assume-yes nginx",
+        "apt install -y -- nginx",
+        "apt install --yes -- nginx",
+        "apt install --assume-yes -- nginx",
+        "apt install nginx -y",
+        "apt install nginx --yes",
+        "apt install nginx --assume-yes",
+      ],
+      explanation:
+        "apt install nginx installs that one package. apt update would only refresh the index, and apt upgrade would upgrade what is already installed. -y answers the confirmation. sudo is accepted in front of any of these because the checker allows one leading sudo.",
+    },
+  ],
+};
+
 const beginnerSkills: Skill[] = [
+  whatIsLinuxAndTheShell,
   navigateTheLinuxFilesystem,
   readFilePermissions,
   changePermissionsWithChmod,
@@ -2397,37 +3094,11 @@ const beginnerSkills: Skill[] = [
   startStopAndRestartServices,
   checkDiskAndMemoryUsage,
   manageUsersAndGroups,
+  installAndRemovePackages,
   understandLinuxNetworkingCommands,
-  preview(
-    `${LINUX}/intermediate/redirect-output-and-errors`,
-    LINUX,
-    "beginner",
-    "fundamentals",
-    "redirect-output-and-errors",
-    "Redirect Output and Errors",
-    "Send command output and errors to a file or another command.",
-    8,
-  ),
-  preview(
-    `${LINUX}/intermediate/edit-a-file-in-the-shell`,
-    LINUX,
-    "beginner",
-    "fundamentals",
-    "edit-a-file-in-the-shell",
-    "Edit a File in the Shell",
-    "Open a file, change one line, and save it.",
-    8,
-  ),
-  preview(
-    `${LINUX}/advanced/write-a-simple-shell-script`,
-    LINUX,
-    "beginner",
-    "scripting",
-    "write-a-simple-shell-script",
-    "Write a Simple Shell Script",
-    "Put a few commands in a file and run that file.",
-    10,
-  ),
+  redirectOutputAndErrors,
+  editAFileInTheShell,
+  writeASimpleShellScript,
 ];
 
 const intermediateSkills: Skill[] = [

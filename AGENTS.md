@@ -28,3 +28,7 @@ Retain qualifying friction even if it is later fixed or worked around; record th
 Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
 
 <!-- END:nextjs-agent-feedback -->
+
+## Skill ids
+
+A skill id is a frozen opaque key. Saved progress is stored under that exact string. Never rebuild an id from the skill's level or slug. When a skill moves to another level, keep the id and change the level field and the route only.
