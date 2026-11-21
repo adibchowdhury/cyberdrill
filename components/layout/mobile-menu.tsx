@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, type ReactNode } from "react";
 import { CloseIcon } from "@/components/icons";
-import { useJourney } from "@/components/journey/journey-provider";
-import { STEPS } from "@/lib/journey/steps";
+import { publicNav } from "@/components/layout/public-nav";
 
 export function MobileMenu({
   open,
@@ -18,7 +17,6 @@ export function MobileMenu({
   account: ReactNode;
 }) {
   const titleId = useId();
-  const { selectedJob, ready } = useJourney();
 
   useEffect(() => {
     if (!open) return;
@@ -35,12 +33,6 @@ export function MobileMenu({
   }, [open, onClose]);
 
   if (!open) return null;
-
-  const items = [{ href: "/", label: "Home", number: null as number | null }, ...STEPS.map((step) => ({
-    href: step.href,
-    label: step.navLabel,
-    number: step.number > 1 ? step.number : null,
-  }))];
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
@@ -59,14 +51,14 @@ export function MobileMenu({
             type="button"
             autoFocus
             onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-lg outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="grid h-10 w-10 place-items-center rounded-lg outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent/40 motion-safe:transition-colors"
           >
             <CloseIcon className="h-5 w-5" />
             <span className="sr-only">Close</span>
           </button>
         </div>
         <nav aria-label="Mobile" className="flex flex-col gap-1 p-3">
-          {items.map((item) => {
+          {publicNav.map((item) => {
             const current = pathname === item.href;
             return (
               <Link
@@ -74,27 +66,16 @@ export function MobileMenu({
                 href={item.href}
                 aria-current={current ? "page" : undefined}
                 onClick={onClose}
-                className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                className={`rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent/40 motion-safe:transition-colors ${
                   current ? "bg-accent/10 font-semibold text-accent" : "text-foreground hover:bg-raised"
                 }`}
               >
-                <span>{item.label}</span>
-                {item.number ? <span className="font-mono text-xs text-muted">{item.number}</span> : null}
+                {item.label}
               </Link>
             );
           })}
         </nav>
-        <div className="mt-auto space-y-3 border-t border-line p-4">
-          {ready && selectedJob ? (
-            <p className="text-sm text-foreground">
-              {selectedJob.title}{" "}
-              <Link href="/jobs" onClick={onClose} className="font-medium text-accent">
-                Change
-              </Link>
-            </p>
-          ) : null}
-          {account}
-        </div>
+        <div className="mt-auto border-t border-line p-4">{account}</div>
       </div>
     </div>
   );

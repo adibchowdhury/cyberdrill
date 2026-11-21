@@ -1,116 +1,91 @@
 import Link from "next/link";
-import { ContinuePrompt } from "@/components/journey/continue-prompt";
-import { getJob } from "@/lib/journey/jobs";
-import { getPathway } from "@/lib/journey/pathways";
-import { STEPS } from "@/lib/journey/steps";
+import { ComingSoonBadge } from "@/components/journey/coming-soon";
 
-const featured = getJob("vulnerability-management-analyst");
-const pathway = getPathway("vulnerability-management-analyst");
+const primaryButton =
+  "inline-flex h-11 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-on-accent shadow-sm outline-none hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent/40 motion-safe:transition-colors";
+
+const secondaryButton =
+  "inline-flex h-11 items-center justify-center rounded-lg border border-line bg-surface px-4 text-sm font-semibold text-foreground outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent/40 motion-safe:transition-colors";
+
+const tools = [
+  {
+    title: "Career Match",
+    description: "Discover careers that fit your interests, strengths, and work style.",
+    label: "Free assessment",
+  },
+  {
+    title: "Career Insights",
+    description: "Compare cybersecurity salaries, demand, and technical skills.",
+    label: "Explore market data",
+  },
+];
+
+const path = [
+  { number: "01", title: "Choose a Job" },
+  { number: "02", title: "Find Skill Gaps" },
+  { number: "03", title: "Train" },
+  { number: "04", title: "Prove Skills" },
+];
 
 export default function HomePage() {
   return (
-    <div className="space-y-16">
-      <ContinuePrompt />
+    <div className="space-y-20 py-6 sm:space-y-28 sm:py-10">
       <section className="max-w-3xl">
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-          Train for the cybersecurity job you actually want.
+        <p className="text-sm font-medium text-accent">Practical cybersecurity career training</p>
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          Build the skills. Gain the confidence. Pursue the career.
         </h1>
-        <p className="mt-4 text-lg leading-8 text-muted">
-          Identify your skill gaps, practice real-world technical responsibilities, and demonstrate the abilities
-          employers look for.
+        <p className="mt-6 max-w-2xl text-xl leading-8 text-muted">
+          Discover cybersecurity careers, find your strengths, and develop practical skills for the job you want.
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/jobs"
-            className="inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-on-accent shadow-sm outline-none hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent/40"
-          >
-            Explore Cybersecurity Jobs
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href="/jobs" className={primaryButton}>
+            Explore Careers
           </Link>
-          <a
-            href="#how-it-works"
-            className="inline-flex h-11 items-center rounded-lg border border-line bg-surface px-4 text-sm font-semibold text-foreground outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent/40"
-          >
-            How CyberDrill Works
-          </a>
+          <Link href="/how-it-works" className={secondaryButton}>
+            How It Works
+          </Link>
         </div>
       </section>
 
-      <section id="how-it-works" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold tracking-tight">How CyberDrill works</h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-2">
-          {STEPS.map((step) => (
-            <li key={step.id}>
-              <Link
-                href={step.href}
-                className="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent/40"
-              >
-                <span className="font-mono text-xs text-accent">{step.number}</span>
-                <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{step.description}</p>
-              </Link>
+      <section>
+        <h2 className="max-w-2xl text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Not sure which cybersecurity career fits you?
+        </h2>
+        <ul className="mt-8 grid gap-4 md:grid-cols-2">
+          {tools.map((tool) => (
+            <li key={tool.title}>
+              <article className="flex h-full flex-col rounded-xl border border-line bg-surface p-6 shadow-sm">
+                <ComingSoonBadge />
+                <h3 className="mt-4 text-xl font-semibold tracking-tight text-foreground">{tool.title}</h3>
+                <p className="mt-2 flex-1 text-base leading-7 text-muted">{tool.description}</p>
+                <p className="mt-6 text-sm font-medium text-foreground">{tool.label}</p>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Your path to practical cybersecurity skills
+        </h2>
+        <ol className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-0">
+          {path.map((step, index) => (
+            <li key={step.number} className="relative lg:pr-6">
+              {index < path.length - 1 ? (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-5 left-1/2 hidden h-px w-full bg-line lg:block"
+                />
+              ) : null}
+              <p className="relative z-10 w-fit bg-background pr-3 font-mono text-4xl font-semibold tracking-tight text-foreground">
+                {step.number}
+              </p>
+              <h3 className="mt-3 text-lg font-semibold text-foreground">{step.title}</h3>
             </li>
           ))}
         </ol>
-      </section>
-
-      {featured && pathway ? (
-        <section>
-          <h2 className="text-2xl font-semibold tracking-tight">Available now</h2>
-          <article className="mt-6 rounded-xl border border-line bg-surface p-6 shadow-sm">
-            <p className="text-xs font-medium tracking-wide text-muted uppercase">{featured.level}</p>
-            <h3 className="mt-2 text-xl font-semibold">{featured.title}</h3>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">{featured.summary}</p>
-            <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-              {pathway.competencies.map((item) => (
-                <li key={item.id} className="rounded-lg bg-raised px-3 py-2 text-sm text-foreground">
-                  {item.title}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/jobs"
-              className="mt-6 inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-on-accent outline-none hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent/40"
-            >
-              Explore this role
-            </Link>
-          </article>
-        </section>
-      ) : null}
-
-      <section className="max-w-3xl">
-        <h2 className="text-2xl font-semibold tracking-tight">Why practical job skills matter</h2>
-        <p className="mt-3 text-sm leading-7 text-muted">
-          Reading about a control is different from deciding whether a finding is real, who should fix it, and what
-          you would write down afterward. CyberDrill is organized around that kind of work for one role at a time.
-          The diagnostic, the practice, and the demonstration are still being built. What you see today is the path
-          those pieces will follow.
-        </p>
-      </section>
-
-      <figure className="overflow-hidden rounded-xl border border-terminal-border bg-terminal text-terminal-foreground shadow-sm">
-        <figcaption className="border-b border-terminal-border px-4 py-2 text-xs text-terminal-muted">
-          Illustrative example, not a live environment
-        </figcaption>
-        <pre className="overflow-x-auto px-4 py-4 font-mono text-xs leading-6">
-          <code>{`host: sample-workstation
-scan: weekly-sample
-status: incomplete
-note: one asset did not respond
-finding: missing update — needs validation`}</code>
-        </pre>
-      </figure>
-
-      <section className="rounded-xl border border-line bg-surface px-6 py-8 shadow-sm">
-        <h2 className="text-2xl font-semibold tracking-tight">Start with a role</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-          Nineteen roles are listed so you can see the map. One role can be selected today.
-        </p>
-        <Link
-          href="/jobs"
-          className="mt-5 inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-on-accent outline-none hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent/40"
-        >
-          Explore Cybersecurity Jobs
-        </Link>
       </section>
     </div>
   );
