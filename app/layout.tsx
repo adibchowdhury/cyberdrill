@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AccountMenu, AccountMenuFallback } from "@/components/account-menu";
-import { AppShell } from "@/components/app-shell";
+import { JourneyProvider } from "@/components/journey/journey-provider";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/layout/site-header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s · CyberDrill",
   },
   description:
-    "Learn practical IT and cybersecurity skills in minutes, then prove what you know.",
+    "Identify skill gaps, practice the work of a cybersecurity role, and demonstrate those abilities.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -30,21 +32,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full scheme-light antialiased`}
     >
-      <body className="min-h-full bg-background font-sans text-foreground">
-        <AppShell
-          account={
-            <Suspense fallback={<AccountMenuFallback placement="bar" />}>
-              <AccountMenu placement="bar" />
-            </Suspense>
-          }
-          menuAccount={
-            <Suspense fallback={<AccountMenuFallback placement="menu" />}>
-              <AccountMenu placement="menu" />
-            </Suspense>
-          }
-        >
-          {children}
-        </AppShell>
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+        <JourneyProvider>
+          <SiteHeader
+            account={
+              <Suspense fallback={<AccountMenuFallback placement="bar" />}>
+                <AccountMenu placement="bar" />
+              </Suspense>
+            }
+            menuAccount={
+              <Suspense fallback={<AccountMenuFallback placement="menu" />}>
+                <AccountMenu placement="menu" />
+              </Suspense>
+            }
+          />
+          <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+            {children}
+          </main>
+          <SiteFooter />
+        </JourneyProvider>
       </body>
     </html>
   );

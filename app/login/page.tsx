@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AuthForm } from "@/components/auth-form";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/journey/page-header";
 
 export const metadata: Metadata = {
   title: "Log in",

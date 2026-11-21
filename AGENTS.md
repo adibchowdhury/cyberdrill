@@ -29,6 +29,10 @@ Before the final response, run one reporting pass. If candidates remain, from th
 
 <!-- END:nextjs-agent-feedback -->
 
-## Skill ids
+## CyberDrill V2
 
-A skill id is a frozen opaque key. Saved progress is stored under that exact string. Never rebuild an id from the skill's level or slug. When a skill moves to another level, keep the id and change the level field and the route only.
+The product is one journey: choose a target job, identify skill gaps, train, then demonstrate. Job and pathway content lives in `lib/journey/`. Shared journey UI lives in `components/journey/`. Site chrome lives in `components/layout/`.
+
+Unfinished features stay honest. Use Coming Soon, an empty state, or planned-task copy. Do not invent scores, completion, certificates, or a working simulation.
+
+The previous Linux lesson and lab product lives in git tag `legacy-linux-v1`.
