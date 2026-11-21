@@ -1,6 +1,39 @@
 import type { PathwayIconName } from "@/components/icons";
 
-export type LevelId = "beginner" | "intermediate" | "advanced";
+export type LevelId = "beginner" | "intermediate" | "advanced" | "expert";
+
+export type DomainId =
+  | "fundamentals"
+  | "users-permissions"
+  | "processes-services"
+  | "packages"
+  | "storage"
+  | "networking"
+  | "logging-troubleshooting"
+  | "scripting"
+  | "security-hardening"
+  | "performance"
+  | "backup-recovery"
+  | "production-ops";
+
+export const DOMAINS: readonly { id: DomainId; name: string }[] = [
+  { id: "fundamentals", name: "Linux Fundamentals and Filesystem" },
+  { id: "users-permissions", name: "Users, Groups, and Permissions" },
+  { id: "processes-services", name: "Processes and Service Management" },
+  { id: "packages", name: "Package and Software Management" },
+  { id: "storage", name: "Storage and Filesystems" },
+  { id: "networking", name: "Networking and Connectivity" },
+  { id: "logging-troubleshooting", name: "Logging and Troubleshooting" },
+  { id: "scripting", name: "Bash Scripting and Automation" },
+  { id: "security-hardening", name: "Linux Security and Hardening" },
+  { id: "performance", name: "Performance and Resource Management" },
+  { id: "backup-recovery", name: "Backup and Recovery" },
+  { id: "production-ops", name: "Infrastructure and Production Operations" },
+];
+
+export const levelBenchmarkNote = "Levels are competency benchmarks, not job qualifications.";
+
+export const advancedLevelNote = "Advanced is mostly hands-on challenges. Coming soon.";
 
 export type TeachingBlock =
   | { type: "paragraph"; text: string }
@@ -49,6 +82,7 @@ export type Skill = {
   slug: string;
   pathway: string;
   level: LevelId;
+  domain: DomainId;
   title: string;
   description: string;
   minutes: number;
@@ -76,18 +110,21 @@ export type Pathway = {
 const LINUX = "linux-administration";
 
 function preview(
+  id: string,
   pathway: string,
   level: LevelId,
+  domain: DomainId,
   slug: string,
   title: string,
   description: string,
   minutes: number,
 ): Skill {
   return {
-    id: `${pathway}/${level}/${slug}`,
+    id,
     slug,
     pathway,
     level,
+    domain,
     title,
     description,
     minutes,
@@ -107,6 +144,7 @@ const readFilePermissions: Skill = {
   slug: "read-file-permissions",
   pathway: LINUX,
   level: "beginner",
+  domain: "users-permissions",
   title: "Read Linux File Permissions",
   description: "Decode rwx strings and numeric modes so you can tell who can read, change, or run a file.",
   minutes: 6,
@@ -245,6 +283,7 @@ const navigateTheLinuxFilesystem: Skill = {
   slug: "navigate-the-linux-filesystem",
   pathway: LINUX,
   level: "beginner",
+  domain: "fundamentals",
   title: "Navigate the Linux Filesystem",
   description: "Move between directories and tell where you are.",
   minutes: 5,
@@ -464,6 +503,7 @@ const changePermissionsWithChmod: Skill = {
   slug: "change-permissions-with-chmod",
   pathway: LINUX,
   level: "beginner",
+  domain: "users-permissions",
   title: "Change Permissions with chmod",
   description: "Set access with a numeric mode or a symbolic change.",
   minutes: 6,
@@ -689,6 +729,7 @@ const manageFileOwnership: Skill = {
   slug: "manage-file-ownership",
   pathway: LINUX,
   level: "beginner",
+  domain: "users-permissions",
   title: "Manage File Ownership",
   description: "Change the user and the group that own a file.",
   minutes: 6,
@@ -868,6 +909,7 @@ const createAndDeleteFiles: Skill = {
   slug: "create-and-delete-files",
   pathway: LINUX,
   level: "beginner",
+  domain: "fundamentals",
   title: "Create and Delete Files",
   description: "Make, copy, move, and remove files without guessing.",
   minutes: 5,
@@ -1038,6 +1080,7 @@ const findFilesAndDirectories: Skill = {
   slug: "find-files-and-directories",
   pathway: LINUX,
   level: "beginner",
+  domain: "fundamentals",
   title: "Find Files and Directories",
   description: "Locate a file by name from the directory you are in.",
   minutes: 7,
@@ -1254,6 +1297,7 @@ const readAndSearchLogFiles: Skill = {
   slug: "read-and-search-log-files",
   pathway: LINUX,
   level: "beginner",
+  domain: "logging-troubleshooting",
   title: "Read and Search Log Files",
   description: "Open a log and jump to the lines that matter.",
   minutes: 8,
@@ -1432,6 +1476,7 @@ const manageLinuxProcesses: Skill = {
   slug: "manage-linux-processes",
   pathway: LINUX,
   level: "beginner",
+  domain: "processes-services",
   title: "Manage Linux Processes",
   description: "See what is running and stop one process.",
   minutes: 7,
@@ -1624,6 +1669,7 @@ const startStopAndRestartServices: Skill = {
   slug: "start-stop-and-restart-services",
   pathway: LINUX,
   level: "beginner",
+  domain: "processes-services",
   title: "Start, Stop, and Restart Services",
   description: "Control a service without rebooting the machine.",
   minutes: 6,
@@ -1795,6 +1841,7 @@ const checkDiskAndMemoryUsage: Skill = {
   slug: "check-disk-and-memory-usage",
   pathway: LINUX,
   level: "beginner",
+  domain: "performance",
   title: "Check Disk and Memory Usage",
   description: "See which filesystem is full and what is using memory.",
   minutes: 6,
@@ -1979,6 +2026,7 @@ const manageUsersAndGroups: Skill = {
   slug: "manage-users-and-groups",
   pathway: LINUX,
   level: "beginner",
+  domain: "users-permissions",
   title: "Manage Users and Groups",
   description: "Add a user and place that user in a group.",
   minutes: 8,
@@ -2163,6 +2211,7 @@ const understandLinuxNetworkingCommands: Skill = {
   slug: "understand-linux-networking-commands",
   pathway: LINUX,
   level: "beginner",
+  domain: "networking",
   title: "Understand Linux Networking Commands",
   description: "Check an address, a route, and an open connection.",
   minutes: 7,
@@ -2349,41 +2398,98 @@ const beginnerSkills: Skill[] = [
   checkDiskAndMemoryUsage,
   manageUsersAndGroups,
   understandLinuxNetworkingCommands,
+  preview(
+    `${LINUX}/intermediate/redirect-output-and-errors`,
+    LINUX,
+    "beginner",
+    "fundamentals",
+    "redirect-output-and-errors",
+    "Redirect Output and Errors",
+    "Send command output and errors to a file or another command.",
+    8,
+  ),
+  preview(
+    `${LINUX}/intermediate/edit-a-file-in-the-shell`,
+    LINUX,
+    "beginner",
+    "fundamentals",
+    "edit-a-file-in-the-shell",
+    "Edit a File in the Shell",
+    "Open a file, change one line, and save it.",
+    8,
+  ),
+  preview(
+    `${LINUX}/advanced/write-a-simple-shell-script`,
+    LINUX,
+    "beginner",
+    "scripting",
+    "write-a-simple-shell-script",
+    "Write a Simple Shell Script",
+    "Put a few commands in a file and run that file.",
+    10,
+  ),
 ];
 
 const intermediateSkills: Skill[] = [
-  preview(LINUX, "intermediate", "redirect-output-and-errors", "Redirect Output and Errors", "Send command output and errors to a file or another command.", 8),
-  preview(LINUX, "intermediate", "search-text-with-grep", "Search Text with grep", "Find matching lines in a file from the shell.", 7),
-  preview(LINUX, "intermediate", "follow-a-log-with-tail", "Follow a Log with tail", "Watch new log lines as they are written.", 6),
-  preview(LINUX, "intermediate", "edit-a-file-in-the-shell", "Edit a File in the Shell", "Open a file, change one line, and save it.", 8),
+  preview(
+    `${LINUX}/advanced/configure-ssh-key-login`,
+    LINUX,
+    "intermediate",
+    "security-hardening",
+    "configure-ssh-key-login",
+    "Configure SSH Key Login",
+    "Create a key pair and use it to sign in.",
+    10,
+  ),
+  preview(
+    `${LINUX}/advanced/read-a-systemd-unit`,
+    LINUX,
+    "intermediate",
+    "processes-services",
+    "read-a-systemd-unit",
+    "Read a systemd Unit",
+    "Find what a service runs and when it starts.",
+    9,
+  ),
+  preview(
+    `${LINUX}/advanced/inspect-listening-ports`,
+    LINUX,
+    "intermediate",
+    "networking",
+    "inspect-listening-ports",
+    "Find What Is Listening and Why It Is Unreachable",
+    "Tell whether a service is listening, and whether anything is blocking access to it.",
+    8,
+  ),
 ];
 
-const advancedSkills: Skill[] = [
-  preview(LINUX, "advanced", "write-a-simple-shell-script", "Write a Simple Shell Script", "Put a few commands in a file and run that file.", 10),
-  preview(LINUX, "advanced", "configure-ssh-key-login", "Configure SSH Key Login", "Create a key pair and use it to sign in.", 10),
-  preview(LINUX, "advanced", "read-a-systemd-unit", "Read a systemd Unit", "Find what a service runs and when it starts.", 9),
-  preview(LINUX, "advanced", "inspect-listening-ports", "Inspect Listening Ports", "See which process is listening on a port.", 8),
-];
+const advancedSkills: Skill[] = [];
 
 function levelsFor(skills: { beginner: Skill[]; intermediate: Skill[]; advanced: Skill[] }): PathwayLevel[] {
   return [
     {
       id: "beginner",
       title: "Beginner",
-      description: "Core commands you can use the same day.",
+      description: "Entry-level technician.",
       skills: skills.beginner,
     },
     {
       id: "intermediate",
       title: "Intermediate",
-      description: "Everyday administration, one skill at a time.",
+      description: "Junior Linux administrator.",
       skills: skills.intermediate,
     },
     {
       id: "advanced",
       title: "Advanced",
-      description: "Deeper Linux work, still in a short speedrun.",
+      description: "Experienced administrator or systems engineer.",
       skills: skills.advanced,
+    },
+    {
+      id: "expert",
+      title: "Expert",
+      description: "Senior engineer or architect.",
+      skills: [],
     },
   ];
 }
@@ -2452,7 +2558,14 @@ export const pathways: Pathway[] = [
 ];
 
 export function isLevelId(value: string): value is LevelId {
-  return value === "beginner" || value === "intermediate" || value === "advanced";
+  return value === "beginner" || value === "intermediate" || value === "advanced" || value === "expert";
+}
+
+export function skillsByDomain(skills: readonly Skill[]): { id: DomainId; name: string; skills: Skill[] }[] {
+  return DOMAINS.flatMap((domain) => {
+    const matching = skills.filter((skill) => skill.domain === domain.id);
+    return matching.length === 0 ? [] : [{ id: domain.id, name: domain.name, skills: matching }];
+  });
 }
 
 export function getPathway(slug: string): Pathway | undefined {
@@ -2501,7 +2614,9 @@ export function pathwayParams(): { pathway: string }[] {
 
 export function levelParams(): { pathway: string; level: string }[] {
   return pathways.flatMap((pathway) =>
-    pathway.levels.map((level) => ({ pathway: pathway.slug, level: level.id })),
+    pathway.levels
+      .filter((level) => level.id !== "expert")
+      .map((level) => ({ pathway: pathway.slug, level: level.id })),
   );
 }
 

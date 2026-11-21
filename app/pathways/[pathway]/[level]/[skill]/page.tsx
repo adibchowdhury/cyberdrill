@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { BackLink, Breadcrumbs } from "@/components/breadcrumbs";
 import { LessonSidebar } from "@/components/speedrun/lesson-sidebar";
 import { SpeedrunSession } from "@/components/speedrun/speedrun-session";
-import { getLevel, getNextSkill, getPathway, getSkill, skillHref, skillParams } from "@/lib/pathways";
+import { getLevel, getNextSkill, getPathway, getSkill, skillHref, skillParams, skillsByDomain } from "@/lib/pathways";
 
 type SkillPageProps = {
   params: Promise<{ pathway: string; level: string; skill: string }>;
@@ -47,18 +47,24 @@ async function SkillDetail({ params }: SkillPageProps) {
   return (
     <div className="space-y-6">
       <LessonSidebar
-        levels={pathway.levels.map((item) => ({
-          id: item.id,
-          title: item.title,
-          skills: item.skills.map((itemSkill) => ({
-            id: itemSkill.id,
-            slug: itemSkill.slug,
-            pathway: itemSkill.pathway,
-            level: itemSkill.level,
-            title: itemSkill.title,
-            placeholder: itemSkill.placeholder,
-          })),
-        }))}
+        levels={pathway.levels
+          .filter((item) => item.id !== "expert")
+          .map((item) => ({
+            id: item.id,
+            title: item.title,
+            domains: skillsByDomain(item.skills).map((group) => ({
+              id: group.id,
+              title: group.name,
+              skills: group.skills.map((itemSkill) => ({
+                id: itemSkill.id,
+                slug: itemSkill.slug,
+                pathway: itemSkill.pathway,
+                level: itemSkill.level,
+                title: itemSkill.title,
+                placeholder: itemSkill.placeholder,
+              })),
+            })),
+          }))}
         currentLevel={level.id}
         currentSlug={skill.slug}
       />

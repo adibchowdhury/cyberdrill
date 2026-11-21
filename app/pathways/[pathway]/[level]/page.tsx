@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { BackLink, Breadcrumbs } from "@/components/breadcrumbs";
 import { SkillCard } from "@/components/skill-card";
 import { PageHeader } from "@/components/page-header";
-import { getLevel, getPathway, levelParams, skillHref } from "@/lib/pathways";
+import { advancedLevelNote, getLevel, getPathway, levelParams, skillHref, skillsByDomain } from "@/lib/pathways";
 
 type LevelPageProps = {
   params: Promise<{ pathway: string; level: string }>;
@@ -34,7 +34,8 @@ async function LevelDetail({ params }: LevelPageProps) {
   const { pathway: pathwaySlug, level: levelId } = await params;
   const pathway = getPathway(pathwaySlug);
   const level = getLevel(pathwaySlug, levelId);
-  if (!pathway?.available || !level) notFound();
+  if (!pathway?.available || !level || level.id === "expert") notFound();
+  const groups = skillsByDomain(level.skills);
 
   return (
     <div className="space-y-8">
@@ -49,17 +50,28 @@ async function LevelDetail({ params }: LevelPageProps) {
         />
         <PageHeader eyebrow={pathway.name} title={level.title} description={level.description} />
       </div>
-      <ul className="grid gap-4 lg:grid-cols-2">
-        {level.skills.map((skill, index) => (
-          <li key={skill.id}>
-            <SkillCard
-              skill={skill}
-              index={index}
-              href={skillHref(pathway.slug, level.id, skill.slug)}
-            />
-          </li>
-        ))}
-      </ul>
+      {level.skills.length === 0 ? (
+        <p className="text-sm leading-6 text-muted">{advancedLevelNote}</p>
+      ) : (
+        <div className="space-y-8">
+          {groups.map((group) => (
+            <section key={group.id}>
+              <h2 className="text-sm font-semibold tracking-tight text-foreground">{group.name}</h2>
+              <ul className="mt-4 grid gap-4 lg:grid-cols-2">
+                {group.skills.map((skill, index) => (
+                  <li key={skill.id}>
+                    <SkillCard
+                      skill={skill}
+                      index={index}
+                      href={skillHref(pathway.slug, level.id, skill.slug)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

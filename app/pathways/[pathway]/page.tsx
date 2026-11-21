@@ -46,7 +46,7 @@ async function PathwayDetail({ params }: PathwayPageProps) {
         />
         <PageHeader eyebrow="Pathway" title={pathway.name} description={pathway.description} />
       </div>
-      <ul className="grid gap-4 lg:grid-cols-3">
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {pathway.levels.map((level) => (
           <li key={level.id} className="min-w-0">
             <LevelCard pathwaySlug={pathway.slug} level={level} />

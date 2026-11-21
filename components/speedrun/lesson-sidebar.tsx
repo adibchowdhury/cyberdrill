@@ -3,18 +3,24 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useStoredProgress } from "@/components/speedrun/use-stored-progress";
-import { skillHref } from "@/lib/pathways";
+import { advancedLevelNote, skillHref } from "@/lib/pathways";
+
+export type LessonSkill = {
+  id: string;
+  slug: string;
+  pathway: string;
+  level: string;
+  title: string;
+  placeholder: boolean;
+};
 
 export type LessonGroup = {
   id: string;
   title: string;
-  skills: {
+  domains: {
     id: string;
-    slug: string;
-    pathway: string;
-    level: string;
     title: string;
-    placeholder: boolean;
+    skills: LessonSkill[];
   }[];
 };
 
@@ -135,34 +141,47 @@ function LessonList({
               <span aria-hidden="true">{isOpen ? "–" : "+"}</span>
             </button>
             {isOpen ? (
-              <ul className="pb-2">
-                {level.skills.map((skill) => {
-                  const current = skill.level === currentLevel && skill.slug === currentSlug;
-                  const completed = Boolean(records[skill.id]);
-                  return (
-                    <li key={skill.id}>
-                      <Link
-                        href={skillHref(skill.pathway, skill.level, skill.slug)}
-                        aria-current={current ? "page" : undefined}
-                        onClick={onNavigate}
-                        className={`flex items-center gap-2 px-3 py-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
-                          current
-                            ? "bg-accent/10 font-medium text-foreground shadow-[inset_3px_0_0_0_var(--color-accent)]"
-                            : skill.placeholder
-                              ? "text-muted hover:bg-raised hover:text-foreground"
-                              : "text-foreground hover:bg-raised"
-                        }`}
-                      >
-                        <StatusMark completed={completed} />
-                        <span className="min-w-0 flex-1 truncate">{skill.title}</span>
-                        {skill.placeholder ? (
-                          <span className="shrink-0 text-[10px] font-medium tracking-wide text-muted uppercase">Soon</span>
-                        ) : null}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+              level.domains.length === 0 ? (
+                <p className="px-3 pb-3 text-sm leading-5 text-muted">
+                  {level.id === "advanced" ? advancedLevelNote : "No skills in this level yet."}
+                </p>
+              ) : (
+                <div className="pb-2">
+                  {level.domains.map((domain) => (
+                    <section key={domain.id}>
+                      <h3 className="px-3 pt-2 pb-1 text-xs font-medium leading-5 text-foreground">{domain.title}</h3>
+                      <ul>
+                        {domain.skills.map((skill) => {
+                          const current = skill.level === currentLevel && skill.slug === currentSlug;
+                          const completed = Boolean(records[skill.id]);
+                          return (
+                            <li key={skill.id}>
+                              <Link
+                                href={skillHref(skill.pathway, skill.level, skill.slug)}
+                                aria-current={current ? "page" : undefined}
+                                onClick={onNavigate}
+                                className={`flex items-center gap-2 py-1.5 pr-3 pl-5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                                  current
+                                    ? "bg-accent/10 font-medium text-foreground shadow-[inset_3px_0_0_0_var(--color-accent)]"
+                                    : skill.placeholder
+                                      ? "text-muted hover:bg-raised hover:text-foreground"
+                                      : "text-foreground hover:bg-raised"
+                                }`}
+                              >
+                                <StatusMark completed={completed} />
+                                <span className="min-w-0 flex-1 truncate">{skill.title}</span>
+                                {skill.placeholder ? (
+                                  <span className="shrink-0 text-[10px] font-medium tracking-wide text-muted uppercase">Soon</span>
+                                ) : null}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
+              )
             ) : null}
           </section>
         );

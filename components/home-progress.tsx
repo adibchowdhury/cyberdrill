@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useStoredProgress } from "@/components/speedrun/use-stored-progress";
 import { ProgressTrack } from "@/components/progress-track";
-import { getPathway, skillHref } from "@/lib/pathways";
+import { advancedLevelNote, getPathway, skillHref } from "@/lib/pathways";
 
 export function HomeProgress() {
   const records = useStoredProgress();
   const linux = getPathway("linux-administration");
   const beginner = linux?.levels.find((level) => level.id === "beginner");
+  const advanced = linux?.levels.find((level) => level.id === "advanced");
   const skills = beginner?.skills ?? [];
   const done = skills.filter((skill) => records[skill.id]).length;
   const total = skills.length;
@@ -36,6 +37,9 @@ export function HomeProgress() {
         >
           {done === 0 ? "Start with" : "Next up"}: {next.title}
         </Link>
+      ) : null}
+      {advanced && advanced.skills.length === 0 ? (
+        <p className="mt-4 text-sm leading-6 text-muted">{advancedLevelNote}</p>
       ) : null}
     </section>
   );

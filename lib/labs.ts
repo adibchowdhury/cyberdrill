@@ -1,3 +1,5 @@
+import type { DomainId } from "@/lib/pathways";
+
 export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
 
 export type LabStatus = "not-started" | "in-progress" | "completed";
@@ -8,6 +10,7 @@ export type Lab = {
   title: string;
   category: string;
   difficulty: Difficulty;
+  domain: DomainId;
   durationMinutes: number;
   status: LabStatus;
   summary: string;
@@ -26,7 +29,8 @@ export const labs: readonly Lab[] = [
     code: "CD-101",
     title: "Disk pressure on /var",
     category: "Linux Administration",
-    difficulty: "Beginner",
+    difficulty: "Intermediate",
+    domain: "storage",
     durationMinutes: 25,
     status: "completed",
     completedAt: "2026-10-06",
@@ -50,7 +54,8 @@ export const labs: readonly Lab[] = [
     code: "CD-102",
     title: "Expired certificate on the edge proxy",
     category: "Web Infrastructure",
-    difficulty: "Beginner",
+    difficulty: "Intermediate",
+    domain: "security-hardening",
     durationMinutes: 20,
     status: "completed",
     completedAt: "2026-10-12",
@@ -74,7 +79,8 @@ export const labs: readonly Lab[] = [
     code: "CD-103",
     title: "SSH lockout after repeated failures",
     category: "Identity & Access",
-    difficulty: "Beginner",
+    difficulty: "Intermediate",
+    domain: "security-hardening",
     durationMinutes: 30,
     status: "completed",
     completedAt: "2026-10-19",
@@ -99,6 +105,7 @@ export const labs: readonly Lab[] = [
     title: "Unexpected scheduled job",
     category: "Incident Response",
     difficulty: "Intermediate",
+    domain: "security-hardening",
     durationMinutes: 40,
     status: "completed",
     completedAt: "2026-11-02",
@@ -122,7 +129,8 @@ export const labs: readonly Lab[] = [
     code: "CD-105",
     title: "Management access blocked by a firewall change",
     category: "Network Security",
-    difficulty: "Beginner",
+    difficulty: "Intermediate",
+    domain: "networking",
     durationMinutes: 25,
     status: "in-progress",
     summary:
@@ -145,6 +153,7 @@ export const labs: readonly Lab[] = [
     title: "Broken sudo policy after an emergency edit",
     category: "Identity & Access",
     difficulty: "Intermediate",
+    domain: "users-permissions",
     durationMinutes: 35,
     status: "in-progress",
     summary:
@@ -167,6 +176,7 @@ export const labs: readonly Lab[] = [
     title: "Repeating DNS queries to an unfamiliar name",
     category: "Logging & Detection",
     difficulty: "Advanced",
+    domain: "security-hardening",
     durationMinutes: 45,
     status: "not-started",
     summary:
@@ -188,7 +198,8 @@ export const labs: readonly Lab[] = [
     code: "CD-108",
     title: "502 responses after a proxy reload",
     category: "Web Infrastructure",
-    difficulty: "Beginner",
+    difficulty: "Intermediate",
+    domain: "networking",
     durationMinutes: 20,
     status: "not-started",
     summary:
@@ -211,6 +222,7 @@ export const labs: readonly Lab[] = [
     title: "Unfamiliar account in the administrators group",
     category: "Identity & Access",
     difficulty: "Intermediate",
+    domain: "security-hardening",
     durationMinutes: 30,
     status: "not-started",
     summary:
@@ -233,6 +245,7 @@ export const labs: readonly Lab[] = [
     title: "Gap in authentication logs",
     category: "Logging & Detection",
     difficulty: "Advanced",
+    domain: "logging-troubleshooting",
     durationMinutes: 40,
     status: "not-started",
     summary:
@@ -255,6 +268,7 @@ export const labs: readonly Lab[] = [
     title: "Interactive session on a service account",
     category: "Incident Response",
     difficulty: "Advanced",
+    domain: "security-hardening",
     durationMinutes: 45,
     status: "not-started",
     summary:
@@ -277,6 +291,7 @@ export const labs: readonly Lab[] = [
     title: "Sustained CPU from an unfamiliar process",
     category: "Linux Administration",
     difficulty: "Intermediate",
+    domain: "performance",
     durationMinutes: 35,
     status: "not-started",
     summary:
