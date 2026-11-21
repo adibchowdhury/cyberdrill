@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BackLink, Breadcrumbs } from "@/components/breadcrumbs";
+import { LessonSidebar } from "@/components/speedrun/lesson-sidebar";
 import { SpeedrunSession } from "@/components/speedrun/speedrun-session";
 import { getLevel, getNextSkill, getPathway, getSkill, skillHref, skillParams } from "@/lib/pathways";
 
@@ -45,18 +46,36 @@ async function SkillDetail({ params }: SkillPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="mx-auto max-w-3xl space-y-4">
-        <BackLink href={`/pathways/${pathway.slug}/${level.id}`} label={`Back to ${level.title}`} />
-        <Breadcrumbs
-          items={[
-            { label: "Pathways", href: "/pathways" },
-            { label: pathway.name, href: `/pathways/${pathway.slug}` },
-            { label: level.title, href: `/pathways/${pathway.slug}/${level.id}` },
-            { label: skill.title },
-          ]}
-        />
+      <LessonSidebar
+        levels={pathway.levels.map((item) => ({
+          id: item.id,
+          title: item.title,
+          skills: item.skills.map((itemSkill) => ({
+            id: itemSkill.id,
+            slug: itemSkill.slug,
+            pathway: itemSkill.pathway,
+            level: itemSkill.level,
+            title: itemSkill.title,
+            placeholder: itemSkill.placeholder,
+          })),
+        }))}
+        currentLevel={level.id}
+        currentSlug={skill.slug}
+      />
+      <div className="mx-auto min-w-0 max-w-3xl space-y-6">
+        <div className="space-y-4">
+          <BackLink href={`/pathways/${pathway.slug}/${level.id}`} label={`Back to ${level.title}`} />
+          <Breadcrumbs
+            items={[
+              { label: "Pathways", href: "/pathways" },
+              { label: pathway.name, href: `/pathways/${pathway.slug}` },
+              { label: level.title, href: `/pathways/${pathway.slug}/${level.id}` },
+              { label: skill.title },
+            ]}
+          />
+        </div>
+        <SpeedrunSession skill={skill} nextHref={nextHref} nextLabel={nextLabel} />
       </div>
-      <SpeedrunSession skill={skill} nextHref={nextHref} nextLabel={nextLabel} />
     </div>
   );
 }

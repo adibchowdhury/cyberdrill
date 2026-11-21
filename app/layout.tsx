@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AccountMenu, AccountMenuFallback } from "@/components/account-menu";
 import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
@@ -29,7 +31,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full scheme-light antialiased`}
     >
       <body className="min-h-full bg-background font-sans text-foreground">
-        <AppShell>{children}</AppShell>
+        <AppShell
+          account={
+            <Suspense fallback={<AccountMenuFallback placement="bar" />}>
+              <AccountMenu placement="bar" />
+            </Suspense>
+          }
+          menuAccount={
+            <Suspense fallback={<AccountMenuFallback placement="menu" />}>
+              <AccountMenu placement="menu" />
+            </Suspense>
+          }
+        >
+          {children}
+        </AppShell>
       </body>
     </html>
   );

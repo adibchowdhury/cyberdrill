@@ -35,40 +35,6 @@ function IconBase({
   );
 }
 
-export function DashboardIcon({ className }: IconProps) {
-  return (
-    <IconBase className={className}>
-      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
-      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
-      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
-      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
-    </IconBase>
-  );
-}
-
-export function LabsIcon({ className }: IconProps) {
-  return (
-    <IconBase className={className}>
-      <path d="M8 6.5h11" />
-      <path d="M8 12h11" />
-      <path d="M8 17.5h11" />
-      <path d="M4.5 6.5h.01" />
-      <path d="M4.5 12h.01" />
-      <path d="M4.5 17.5h.01" />
-    </IconBase>
-  );
-}
-
-export function ProgressIcon({ className }: IconProps) {
-  return (
-    <IconBase className={className}>
-      <path d="M4 19V5" />
-      <path d="M4 19h16" />
-      <path d="M8 15.5l3.2-3.2 2.3 2.2L19 8.5" />
-    </IconBase>
-  );
-}
-
 export function MenuIcon({ className }: IconProps) {
   return (
     <IconBase className={className}>
@@ -84,19 +50,6 @@ export function CloseIcon({ className }: IconProps) {
     <IconBase className={className}>
       <path d="M6 6l12 12" />
       <path d="M18 6L6 18" />
-    </IconBase>
-  );
-}
-
-export function PathwaysIcon({ className }: IconProps) {
-  return (
-    <IconBase className={className}>
-      <circle cx="6" cy="7" r="2" />
-      <circle cx="17" cy="7" r="2" />
-      <circle cx="12" cy="17" r="2" />
-      <path d="M8 7h7" />
-      <path d="M7.2 8.8l3.4 6" />
-      <path d="M16.6 8.8l-3.2 6" />
     </IconBase>
   );
 }
